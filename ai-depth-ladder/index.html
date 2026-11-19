@@ -1,0 +1,347 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Depth Ladder — SMB AI Toolkit</title>
+<meta name="description" content="Free tool: find out if AI lives in browser tabs or in your business processes, pick one use to build in, and print a one-page AI SOP. Runs in your browser, no sign-up.">
+<meta property="og:title" content="AI Depth Ladder — is AI in your tabs or in your processes?">
+<meta property="og:description" content="List your AI uses, see which rung each one is on, and turn one into a one-page standard process. Free, no sign-up.">
+<style>
+:root{
+  --bg:#f7f7f5;--surface:#ffffff;--text:#1c1c1e;--muted:#4f4f55;--border:#c9c9cf;
+  --accent:#0b5cad;--accent-text:#ffffff;--focus:#b35c00;--ok:#1d6b3a;--warn:#8a4b00;
+  --l1:#e9e9ee;--l2:#dbe8f6;--l3:#c3dcf2;--l4:#0b5cad;--l4t:#ffffff;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#141416;--surface:#1e1e21;--text:#f1f1f3;--muted:#b9b9c0;--border:#4a4a52;
+  --accent:#7db7f0;--accent-text:#0b1a2a;--focus:#ffb35c;--ok:#7fd49c;--warn:#ffc27a;
+  --l1:#2b2b30;--l2:#1f3347;--l3:#27486a;--l4:#7db7f0;--l4t:#0b1a2a;}}
+*{box-sizing:border-box}
+html{font-size:100%}
+body{margin:0;background:var(--bg);color:var(--text);font:1rem/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+a{color:var(--accent)}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.skip{position:absolute;left:-9999px}.skip:focus{left:16px;top:8px;background:var(--surface);padding:8px 12px;z-index:9}
+.wrap{max-width:960px;margin:0 auto;padding:24px 16px 64px}
+header h1{margin:0 0 2px;font-size:clamp(1.6rem,4vw,2.2rem);line-height:1.2}
+.es{display:block;color:var(--muted);font-style:italic;font-weight:400;font-size:.92em}
+h2 .es,h1 .es{font-size:.6em;margin-top:2px}
+.lede{max-width:65ch}
+section{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;margin-top:20px}
+h2{margin:0 0 12px;font-size:1.3rem;line-height:1.3}
+.ladder{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0 0;padding:0;list-style:none}
+.ladder li{border-radius:8px;padding:10px;font-size:.9rem;border:1px solid var(--border)}
+.ladder li:nth-child(1){background:var(--l1)}.ladder li:nth-child(2){background:var(--l2)}
+.ladder li:nth-child(3){background:var(--l3)}.ladder li:nth-child(4){background:var(--l4);color:var(--l4t)}
+.ladder li:nth-child(4) .es{color:var(--l4t)}
+.ladder b{display:block}
+.use{border:1px solid var(--border);border-radius:10px;padding:14px;margin:0 0 14px}
+.use legend{font-weight:700;padding:0 6px}
+.grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:12px}
+label,.lbl{display:block;font-weight:600;font-size:.95rem;margin-bottom:4px}
+label .es,.lbl .es{font-weight:400;font-size:.85rem}
+input[type=text],input[type=number],select,textarea{width:100%;min-height:44px;padding:8px 10px;border:1px solid var(--muted);border-radius:6px;background:var(--surface);color:var(--text);font:inherit}
+textarea{min-height:88px;resize:vertical}
+.checks{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:12px;border:0;padding:0}
+.checks legend{font-weight:600;font-size:.95rem;padding:0;margin-bottom:6px}
+.checks label{display:flex;align-items:center;gap:8px;font-weight:400;min-height:44px;margin:0}
+.checks input{width:22px;height:22px}
+.row-actions{display:flex;justify-content:flex-end;margin-top:8px}
+button{font:inherit;min-height:44px;padding:8px 16px;border-radius:8px;border:2px solid var(--accent);cursor:pointer}
+.primary{background:var(--accent);color:var(--accent-text)}
+.secondary{background:transparent;color:var(--accent)}
+.link{background:none;border:0;color:var(--accent);text-decoration:underline;padding:8px}
+.btns{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+.bar{display:flex;height:28px;border-radius:6px;overflow:hidden;border:1px solid var(--border);margin:6px 0 4px}
+.bar span{display:block;height:100%}
+.legend-row{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:.88rem;color:var(--muted)}
+.sw{display:inline-block;width:12px;height:12px;border-radius:3px;border:1px solid var(--border);margin-right:6px;vertical-align:-1px}
+table{width:100%;border-collapse:collapse;margin-top:12px;font-size:.95rem}
+th,td{text-align:left;padding:8px;border-bottom:1px solid var(--border);vertical-align:top}
+th{font-size:.85rem;color:var(--muted)}
+.pill{display:inline-block;padding:2px 8px;border-radius:999px;font-size:.82rem;font-weight:600;border:1px solid var(--border);white-space:nowrap}
+.p1{background:var(--l1)}.p2{background:var(--l2)}.p3{background:var(--l3)}.p4{background:var(--l4);color:var(--l4t)}
+.callout{border-left:4px solid var(--accent);padding:10px 14px;background:var(--bg);border-radius:0 8px 8px 0;margin-top:14px}
+.muted{color:var(--muted);font-size:.9rem}
+.sop-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.full{grid-column:1/-1}
+footer{margin-top:28px;font-size:.88rem;color:var(--muted)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+@media (max-width:720px){.grid,.sop-grid{grid-template-columns:1fr}.ladder{grid-template-columns:1fr 1fr}
+  table thead{display:none}table,tbody,tr,td{display:block}tr{border-bottom:1px solid var(--border);padding:6px 0}td{border:0;padding:4px 0}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+#printSop{display:none}
+@media print{
+  body{background:#fff;color:#000}
+  body>*:not(#printSop){display:none!important}
+  #printSop{display:block;font:11pt/1.45 Georgia,serif;color:#000;padding:0}
+  #printSop h1{font:700 18pt/1.2 system-ui,sans-serif;margin:0 0 4px}
+  #printSop h2{font:700 11pt system-ui,sans-serif;margin:14px 0 4px;text-transform:uppercase;letter-spacing:.04em}
+  #printSop table{font-size:10pt;width:100%;border-collapse:collapse}#printSop th{width:18%;text-align:left;background:#f0f0f0}#printSop td{height:28px}#printSop td,#printSop th{border:1px solid #999}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="wrap">
+<header>
+  <p class="muted"><a href="../">SMB AI Toolkit</a> › AI Depth Ladder</p>
+  <h1>AI Depth Ladder <span class="es" lang="es">Escalera de profundidad de IA</span></h1>
+  <p class="lede">Is AI in your team's browser tabs, or in your business processes? List how you use AI today, see which rung each use is on, and turn one into a one-page standard process.
+  <span class="es" lang="es">¿La IA vive en las pestañas de tu equipo o en tus procesos? Lista cómo la usan hoy, mira en qué peldaño está cada uso y convierte uno en un procedimiento de una página.</span></p>
+  <p class="muted">Runs 100% in your browser. Nothing is sent anywhere. <span lang="es">Todo se queda en tu navegador.</span></p>
+</header>
+
+<main id="main">
+<section aria-labelledby="h-ladder">
+  <h2 id="h-ladder">The four rungs <span class="es" lang="es">Los cuatro peldaños</span></h2>
+  <ol class="ladder">
+    <li><b>1. Experimenting</b><span class="es" lang="es">Experimentando</span>Tried it, no regular use.</li>
+    <li><b>2. Some tasks</b><span class="es" lang="es">Algunas tareas</span>Used regularly, by one person.</li>
+    <li><b>3. Regular, shared</b><span class="es" lang="es">Regular y compartido</span>Weekly, by 2+ people.</li>
+    <li><b>4. Built in</b><span class="es" lang="es">Integrado</span>Written down, reviewed, the default way.</li>
+  </ol>
+  <p class="muted">In Gusto's 2026 survey of 1,731 U.S. small businesses: 19% experimenting, 28% some tasks, 15% regular across functions, 5% built in, 33% not using AI.</p>
+</section>
+
+<section aria-labelledby="h-uses">
+  <h2 id="h-uses">Step 1 · Your AI uses <span class="es" lang="es">Paso 1 · Tus usos de IA</span></h2>
+  <p class="muted">Add every way someone in the business uses AI today — even "Ana uses ChatGPT for emails". <span lang="es">Agrega cada uso, aunque sea informal.</span></p>
+  <div id="uses"></div>
+  <div class="btns">
+    <button type="button" class="secondary" id="addUse">+ Add another use <span lang="es">/ Agregar uso</span></button>
+    <button type="button" class="link" id="loadExample">Load an example <span lang="es">/ Cargar ejemplo</span></button>
+  </div>
+</section>
+
+<section aria-labelledby="h-res">
+  <h2 id="h-res">Step 2 · Where you stand <span class="es" lang="es">Paso 2 · Dónde estás</span></h2>
+  <div id="results" aria-live="polite"></div>
+</section>
+
+<section aria-labelledby="h-sop">
+  <h2 id="h-sop">Step 3 · One-page AI SOP <span class="es" lang="es">Paso 3 · Procedimiento de IA en una página</span></h2>
+  <p class="muted">Pre-filled from your candidate. Edit anything, then print or copy. <span lang="es">Se llena con tu candidato; edítalo e imprímelo.</span></p>
+  <div class="sop-grid">
+    <div class="full"><label for="s-task">Task <span class="es" lang="es">Tarea</span></label><input type="text" id="s-task"></div>
+    <div><label for="s-owner">Process owner <span class="es" lang="es">Responsable del proceso</span></label><input type="text" id="s-owner" placeholder="e.g., Sales lead"></div>
+    <div><label for="s-reviewer">Who checks the output <span class="es" lang="es">Quién revisa el resultado</span></label><input type="text" id="s-reviewer" placeholder="e.g., Owner, before sending"></div>
+    <div class="full"><label for="s-prompt">Approved prompt <span class="es" lang="es">Prompt aprobado</span></label><textarea id="s-prompt" placeholder="Paste the exact prompt the team should use."></textarea></div>
+    <div><label for="s-inputs">Inputs it needs <span class="es" lang="es">Insumos que necesita</span></label><textarea id="s-inputs" placeholder="e.g., customer question, price list v3, tone guide"></textarea></div>
+    <div><label for="s-never">Never paste into AI <span class="es" lang="es">Nunca pegar en la IA</span></label><textarea id="s-never">Card or bank numbers, passwords, customer IDs, health data, unreleased financials.</textarea></div>
+    <div><label for="s-tool">Approved tool <span class="es" lang="es">Herramienta aprobada</span></label><input type="text" id="s-tool" placeholder="e.g., company account of ___"></div>
+    <div><label for="s-metric">Metric <span class="es" lang="es">Métrica</span></label><input type="text" id="s-metric" placeholder="e.g., minutes per reply, errors per week"></div>
+    <div><label for="s-before">Baseline (before) <span class="es" lang="es">Línea base (antes)</span></label><input type="text" id="s-before"></div>
+    <div><label for="s-review">30-day review date <span class="es" lang="es">Fecha de revisión a 30 días</span></label><input type="text" id="s-review"></div>
+  </div>
+  <div class="btns">
+    <button type="button" class="primary" id="printBtn">Print / save as PDF <span lang="es">/ Imprimir</span></button>
+    <button type="button" class="secondary" id="copyBtn">Copy as text <span lang="es">/ Copiar</span></button>
+    <button type="button" class="link" id="resetBtn">Start over <span lang="es">/ Empezar de nuevo</span></button>
+  </div>
+  <p id="copyStatus" class="muted" role="status"></p>
+</section>
+</main>
+
+<footer>
+  <p>Part of the free <a href="../">SMB AI Toolkit</a> · MIT License · Data from Gusto, <i>2026 State of Small Business</i> (n=1,731, U.S., Aug–Sep 2026). Made by Rodrigo — feedback welcome via GitHub Discussions.</p>
+  <p>Related: <a href="../ai-readiness-check/">AI Readiness Check</a> · <a href="../ai-roi-tracker/">AI ROI Tracker</a> · <a href="../ai-learning-path/">AI Learning Path</a></p>
+</footer>
+</div>
+
+<div id="printSop" aria-hidden="true"></div>
+
+<template id="useTpl">
+  <fieldset class="use">
+    <legend>Use <span class="n"></span></legend>
+    <div class="grid">
+      <div><label>What is AI used for? <span class="es" lang="es">¿Para qué se usa?</span><input type="text" data-k="task" placeholder="e.g., Draft replies to customer WhatsApp"></label></div>
+      <div><label>How often <span class="es" lang="es">Frecuencia</span>
+        <select data-k="freq">
+          <option value="tried">Tried once or twice</option>
+          <option value="monthly">Monthly</option>
+          <option value="weekly" selected>Weekly</option>
+          <option value="daily">Daily</option>
+        </select></label></div>
+      <div><label>People using it <span class="es" lang="es">Personas que lo usan</span><input type="number" min="1" max="999" inputmode="numeric" data-k="people" value="1"></label></div>
+    </div>
+    <fieldset class="checks">
+      <legend>Is it… <span lang="es" class="es">¿Está…?</span></legend>
+      <label><input type="checkbox" data-k="prompt"> Prompt written down <span lang="es">/ prompt escrito</span></label>
+      <label><input type="checkbox" data-k="inputs"> Inputs defined <span lang="es">/ insumos definidos</span></label>
+      <label><input type="checkbox" data-k="reviewer"> Named reviewer <span lang="es">/ revisor asignado</span></label>
+      <label><input type="checkbox" data-k="default"> The default way <span lang="es">/ la forma estándar</span></label>
+    </fieldset>
+    <div class="row-actions"><button type="button" class="link rm">Remove this use <span lang="es">/ Quitar</span></button></div>
+  </fieldset>
+</template>
+
+<script>
+(function(){
+  "use strict";
+  var KEY="smb-ai-toolkit:ai-depth-ladder:v1";
+  var LEVELS=[
+    {n:"Experimenting",es:"Experimentando",c:"p1",v:"--l1"},
+    {n:"Some tasks",es:"Algunas tareas",c:"p2",v:"--l2"},
+    {n:"Regular, shared",es:"Regular y compartido",c:"p3",v:"--l3"},
+    {n:"Built in",es:"Integrado",c:"p4",v:"--l4"}];
+  var usesEl=document.getElementById("uses"), tpl=document.getElementById("useTpl");
+  var SOP=["task","owner","reviewer","prompt","inputs","never","tool","metric","before","review"];
+  var sopTouched=false;
+
+  function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
+  function load(){try{return JSON.parse(localStorage.getItem(KEY))||null;}catch(e){return null;}}
+  function save(){try{localStorage.setItem(KEY,JSON.stringify({uses:readUses(),sop:readSop(),touched:sopTouched}));}catch(e){}}
+
+  function addUse(d){
+    var node=tpl.content.firstElementChild.cloneNode(true);
+    d=d||{};
+    node.querySelectorAll("[data-k]").forEach(function(el){
+      var k=el.getAttribute("data-k");
+      if(el.type==="checkbox"){el.checked=!!d[k];}else if(d[k]!=null){el.value=d[k];}
+    });
+    node.querySelector(".rm").addEventListener("click",function(){
+      if(usesEl.children.length<=1){node.querySelectorAll("input[type=text]").forEach(function(i){i.value="";});return update();}
+      var idx=Array.prototype.indexOf.call(usesEl.children,node);
+      node.remove(); renumber(); update();
+      var t=usesEl.children[Math.max(0,idx-1)]; if(t){t.querySelector("input").focus();}
+    });
+    usesEl.appendChild(node); renumber(); return node;
+  }
+  function renumber(){
+    Array.prototype.forEach.call(usesEl.children,function(f,i){
+      f.querySelector(".n").textContent=i+1;
+      f.querySelector(".rm").setAttribute("aria-label","Remove use "+(i+1));
+    });
+  }
+  function readUses(){
+    return Array.prototype.map.call(usesEl.children,function(f){
+      var o={}; f.querySelectorAll("[data-k]").forEach(function(el){
+        var k=el.getAttribute("data-k"); o[k]=el.type==="checkbox"?el.checked:el.value;});
+      o.people=Math.max(1,parseInt(o.people,10)||1); return o;
+    });
+  }
+  function readSop(){var o={};SOP.forEach(function(k){o[k]=document.getElementById("s-"+k).value;});return o;}
+  function writeSop(o){SOP.forEach(function(k){if(o[k]!=null)document.getElementById("s-"+k).value=o[k];});}
+
+  function level(u){
+    var regular=(u.freq==="weekly"||u.freq==="daily");
+    var docs=u.prompt&&u.inputs&&u.reviewer;
+    if(regular&&u.people>=2&&docs&&u.default) return 3;
+    if(regular&&u.people>=2) return 2;
+    if(regular||u.freq==="monthly") return 1;
+    return 0;
+  }
+  function nextStep(u,l){
+    if(l===3) return "Keep it: review the metric every 30 days.";
+    if(l===0) return "Use it on a real task every week for a month — or drop it.";
+    if(l===1){
+      if(u.freq==="monthly") return "Make it weekly, then share it with one more person.";
+      return "Show one teammate how you do it.";
+    }
+    var miss=[];
+    if(!u.prompt) miss.push("write the prompt down");
+    if(!u.inputs) miss.push("define the inputs");
+    if(!u.reviewer) miss.push("name a reviewer");
+    if(!u.default) miss.push("make it the default way");
+    return miss.length? "To build it in: "+miss.join(", ")+"." : "";
+  }
+  function weight(u){return ({tried:0,monthly:1,weekly:4,daily:20})[u.freq]*u.people;}
+
+  function update(){
+    var uses=readUses().filter(function(u){return u.task.trim();});
+    var res=document.getElementById("results");
+    if(!uses.length){res.innerHTML='<p class="muted">Add at least one use in Step 1 to see your ladder. <span lang="es">Agrega al menos un uso.</span></p>';save();return;}
+    var counts=[0,0,0,0], rows="";
+    uses.forEach(function(u){
+      var l=level(u); counts[l]++; u._l=l;
+      rows+="<tr><td>"+esc(u.task)+"</td><td><span class='pill "+LEVELS[l].c+"'>"+(l+1)+". "+LEVELS[l].n+"</span></td><td>"+esc(nextStep(u,l))+"</td></tr>";
+    });
+    var top=counts.indexOf(Math.max.apply(null,counts));
+    var deepest=Math.max.apply(null,uses.map(function(u){return u._l;}));
+    var cands=uses.filter(function(u){return u._l===2;});
+    if(!cands.length) cands=uses.filter(function(u){return u._l===1;});
+    cands.sort(function(a,b){return weight(b)-weight(a);});
+    var cand=cands[0];
+    var bar="", leg="";
+    counts.forEach(function(c,i){
+      if(c) bar+="<span style='width:"+(c/uses.length*100)+"%;background:var("+LEVELS[i].v+")'></span>";
+      leg+="<span><span class='sw' style='background:var("+LEVELS[i].v+")'></span>"+LEVELS[i].n+": "+c+"</span>";
+    });
+    var builtPct=Math.round(counts[3]/uses.length*100);
+    var headline = counts[3]===uses.length ? "AI is built into your processes."
+      : (counts[0]+counts[1]>=uses.length/2 ? "AI lives mostly in tabs, not in processes." : "You're halfway: AI is shared, but not yet built in.");
+    var html="<p><strong>"+headline+"</strong><span class='es' lang='es'>"+
+      (counts[3]===uses.length?"La IA está integrada a tus procesos.":(counts[0]+counts[1]>=uses.length/2?"La IA vive en pestañas, no en procesos.":"Vas a la mitad: la IA se comparte, pero no está integrada."))+"</span></p>"+
+      "<div class='bar' role='img' aria-label='"+uses.length+" uses: "+counts.map(function(c,i){return c+" "+LEVELS[i].n;}).join(", ")+"'>"+bar+"</div>"+
+      "<div class='legend-row' aria-hidden='true'>"+leg+"</div>"+
+      "<p>"+uses.length+" use"+(uses.length>1?"s":"")+" · most common rung: <strong>"+(top+1)+". "+LEVELS[top].n+"</strong> · deepest: <strong>"+(deepest+1)+". "+LEVELS[deepest].n+"</strong> · built in: <strong>"+builtPct+"%</strong> (Gusto benchmark: 5% of small businesses).</p>"+
+      "<table><caption class='sr'>Each AI use, its rung and next step</caption><thead><tr><th scope='col'>Use</th><th scope='col'>Rung</th><th scope='col'>Next step</th></tr></thead><tbody>"+rows+"</tbody></table>";
+    if(cand){
+      html+="<div class='callout'><strong>Your candidate to build in:</strong> "+esc(cand.task)+
+        "<span class='es' lang='es'>Tu candidato para integrar</span><span class='muted'>Chosen because it's used "+cand.freq+" by "+cand.people+" "+(cand.people>1?"people":"person")+" and isn't built in yet. Step 3 turns it into a one-page SOP.</span></div>";
+      if(!sopTouched){
+        writeSop({task:cand.task});
+      }
+    } else if(counts[3]===uses.length){
+      html+="<div class='callout'>Everything listed is built in. Add a new use, or review your metrics. <span lang='es'>Todo está integrado.</span></div>";
+    } else {
+      html+="<div class='callout'>No candidate yet: start by using one tool weekly on a real task. <span lang='es'>Aún no hay candidato.</span></div>";
+    }
+    res.innerHTML=html; save();
+  }
+
+  function sopText(){
+    var s=readSop();
+    return "ONE-PAGE AI SOP\nTask: "+s.task+"\nProcess owner: "+s.owner+"\nWho checks the output: "+s.reviewer+
+      "\nApproved tool: "+s.tool+"\n\nApproved prompt:\n"+s.prompt+"\n\nInputs it needs:\n"+s.inputs+
+      "\n\nNever paste into AI:\n"+s.never+"\n\nMetric: "+s.metric+"\nBaseline (before): "+s.before+"\n30-day review: "+s.review+
+      "\n\nMade with AI Depth Ladder — SMB AI Toolkit";
+  }
+  function buildPrint(){
+    var s=readSop(), today=new Date().toISOString().slice(0,10);
+    function blk(t,v){return "<h2>"+t+"</h2><p>"+(esc(v||"—").replace(/\n/g,"<br>"))+"</p>";}
+    document.getElementById("printSop").innerHTML=
+      "<h1>One-page AI SOP · "+esc(s.task||"")+"</h1><p>Version 1 · "+today+"</p>"+
+      "<table><tr><th>Process owner</th><td>"+esc(s.owner||"")+"</td><th>Reviewer</th><td>"+esc(s.reviewer||"")+"</td></tr>"+
+      "<tr><th>Approved tool</th><td>"+esc(s.tool||"")+"</td><th>30-day review</th><td>"+esc(s.review||"")+"</td></tr></table>"+
+      blk("Approved prompt",s.prompt)+blk("Inputs it needs",s.inputs)+blk("Never paste into AI",s.never)+
+      "<h2>Measurement</h2><table><tr><th>Metric</th><th>Before</th><th>Week 1</th><th>Week 2</th><th>Week 3</th><th>Week 4</th></tr><tr><td>"+esc(s.metric||"")+"</td><td>"+esc(s.before||"")+"</td><td>&nbsp;</td><td></td><td></td><td></td></tr></table>"+
+      "<p style='margin-top:18px;font-size:9pt'>Made with AI Depth Ladder — SMB AI Toolkit (MIT).</p>";
+  }
+
+  document.getElementById("addUse").addEventListener("click",function(){var n=addUse();n.querySelector("input").focus();update();});
+  document.getElementById("loadExample").addEventListener("click",function(){
+    usesEl.innerHTML=""; sopTouched=false;
+    [{task:"Draft replies to customer WhatsApp",freq:"daily",people:3,prompt:true},
+     {task:"Write product descriptions",freq:"weekly",people:1},
+     {task:"Summarize supplier contracts",freq:"monthly",people:1},
+     {task:"Social media captions",freq:"weekly",people:2,prompt:true,inputs:true,reviewer:true,default:true},
+     {task:"Tried an image generator",freq:"tried",people:1}].forEach(addUse);
+    update(); document.getElementById("h-res").scrollIntoView({behavior:"smooth"});
+  });
+  usesEl.addEventListener("input",update); usesEl.addEventListener("change",update);
+  SOP.forEach(function(k){document.getElementById("s-"+k).addEventListener("input",function(){sopTouched=true;save();});});
+  document.getElementById("printBtn").addEventListener("click",function(){buildPrint();window.print();});
+  window.addEventListener("beforeprint",buildPrint);
+  document.getElementById("copyBtn").addEventListener("click",function(){
+    var st=document.getElementById("copyStatus"), t=sopText();
+    function fallback(){var ta=document.createElement("textarea");ta.value=t;document.body.appendChild(ta);ta.select();
+      try{document.execCommand("copy");st.textContent="Copied. / Copiado.";}catch(e){st.textContent="Couldn't copy — select the text manually.";}ta.remove();}
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(function(){st.textContent="Copied. / Copiado.";},fallback);}else{fallback();}
+  });
+  document.getElementById("resetBtn").addEventListener("click",function(){
+    if(!confirm("Clear everything? / ¿Borrar todo?"))return;
+    try{localStorage.removeItem(KEY);}catch(e){}
+    usesEl.innerHTML=""; sopTouched=false; SOP.forEach(function(k){if(k!=="never")document.getElementById("s-"+k).value="";});
+    addUse(); update(); usesEl.querySelector("input").focus();
+  });
+
+  var st=load();
+  if(st&&st.uses&&st.uses.length){st.uses.forEach(addUse); sopTouched=!!st.touched; if(st.sop)writeSop(st.sop);} else {addUse();}
+  update();
+})();
+</script>
+</body>
+</html>
