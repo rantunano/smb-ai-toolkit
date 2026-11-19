@@ -10,7 +10,7 @@ Is AI in your team's browser tabs, or in your business processes?
 
 Runs 100% in your browser. No sign-up, no backend, no tracking. Your draft is saved only in your own browser (localStorage).
 
-**Live:** https://YOUR-USER.github.io/smb-ai-toolkit/ai-depth-ladder/
+**Live:** https://rantunano.github.io/smb-ai-toolkit/ai-depth-ladder/
 
 ## Why
 In Gusto's *2026 State of Small Business* survey (1,731 U.S. small businesses with fewer than 25 employees, Aug–Sep 2026), 67% use AI tools. But only 15% use them regularly across several functions, and only 5% say AI is built into every part of the business. Source: [Gusto via PR Newswire, Nov 12 2026](https://www.prnewswire.com/news-releases/small-business-owners-are-more-confident-in-their-own-companies-than-in-the-economy-and-two-thirds-use-ai-gusto-survey-finds-302936587.html).
