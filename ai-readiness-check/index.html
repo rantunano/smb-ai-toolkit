@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Readiness Check — SMB AI Toolkit</title>
+<meta name="description" content="Free 10-question AI readiness check for small businesses: strategy, data, talent, infrastructure and governance. Get your score and where to start. No sign-up.">
+<meta property="og:title" content="AI Readiness Check — is your business ready for AI?">
+<meta property="og:description" content="10 questions, 5 pillars, 3 minutes. Free, no sign-up, runs in your browser.">
+<style>
+:root{
+  --bg:#f7f7f5;--surface:#ffffff;--text:#1c1c1e;--muted:#4f4f55;--border:#c9c9cf;
+  --accent:#0b5cad;--accent-text:#ffffff;--focus:#b35c00;--track:#e4e4e9;--sel:#e7f0fa;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#141416;--surface:#1e1e21;--text:#f1f1f3;--muted:#b9b9c0;--border:#4a4a52;
+  --accent:#7db7f0;--accent-text:#0b1a2a;--focus:#ffb35c;--track:#2e2e33;--sel:#1f3347;}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:1rem/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+a{color:var(--accent)}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.skip{position:absolute;left:-9999px}.skip:focus{left:16px;top:8px;background:var(--surface);padding:8px 12px;z-index:9}
+.wrap{max-width:860px;margin:0 auto;padding:24px 16px 64px}
+h1{margin:0 0 2px;font-size:clamp(1.6rem,4vw,2.2rem);line-height:1.2}
+.es{display:block;color:var(--muted);font-style:italic;font-weight:400;font-size:.92em}
+h1 .es,h2 .es{font-size:.6em;margin-top:2px}
+.lede{max-width:65ch}
+.muted{color:var(--muted);font-size:.9rem}
+section{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;margin-top:20px}
+h2{margin:0 0 6px;font-size:1.3rem;line-height:1.3}
+.q{border:0;padding:0;margin:18px 0 0}
+.q legend{font-weight:600;padding:0;margin-bottom:8px}
+.q legend .es{font-size:.88rem;font-weight:400}
+.opt{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border:1px solid var(--border);border-radius:8px;margin-bottom:6px;cursor:pointer;min-height:44px}
+.opt input{width:20px;height:20px;margin-top:2px;flex:none}
+.opt:has(input:checked){background:var(--sel);border-color:var(--accent)}
+.opt span .es{font-size:.85rem}
+button{font:inherit;min-height:44px;padding:8px 16px;border-radius:8px;border:2px solid var(--accent);cursor:pointer}
+.primary{background:var(--accent);color:var(--accent-text)}
+.secondary{background:transparent;color:var(--accent)}
+.btns{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+.score{font-size:2.4rem;font-weight:700;line-height:1}
+.pillars{list-style:none;padding:0;margin:16px 0 0}
+.pillars li{margin-bottom:12px}
+.prow{display:flex;justify-content:space-between;gap:8px;font-weight:600}
+.track{height:12px;background:var(--track);border-radius:6px;overflow:hidden;margin-top:4px}
+.fill{height:100%;background:var(--accent)}
+.callout{border-left:4px solid var(--accent);padding:10px 14px;background:var(--bg);border-radius:0 8px 8px 0;margin-top:14px}
+.callout ol{margin:6px 0 0;padding-left:20px}
+footer{margin-top:28px;font-size:.88rem;color:var(--muted)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+@media print{body{background:#fff;color:#000}.noprint,#quiz,.skip{display:none!important}section{border:0;padding:0}.fill{background:#000!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}.track{border:1px solid #999}}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="wrap">
+<header>
+  <p class="muted noprint"><a href="../">SMB AI Toolkit</a> › AI Readiness Check</p>
+  <h1>AI Readiness Check <span class="es" lang="es">Diagnóstico de preparación para IA</span></h1>
+  <p class="lede">10 questions across 5 pillars — strategy, data, talent, infrastructure and governance. About 3 minutes. Answer for your business as it is today, not as you'd like it to be.
+  <span class="es" lang="es">10 preguntas en 5 pilares. Unos 3 minutos. Responde por tu negocio como está hoy.</span></p>
+  <p class="muted">Runs 100% in your browser. Nothing is sent anywhere. <span lang="es">Todo se queda en tu navegador.</span></p>
+</header>
+
+<main id="main">
+<section id="quiz" aria-labelledby="h-q">
+  <h2 id="h-q">Questions <span class="es" lang="es">Preguntas</span></h2>
+  <form id="form" novalidate></form>
+  <div class="btns">
+    <button type="button" class="primary" id="go">See my result <span lang="es">/ Ver resultado</span></button>
+  </div>
+  <p id="msg" class="muted" role="alert"></p>
+</section>
+
+<section id="result" aria-labelledby="h-r" hidden tabindex="-1">
+  <h2 id="h-r">Your result <span class="es" lang="es">Tu resultado</span></h2>
+  <div id="out"></div>
+  <div class="btns noprint">
+    <button type="button" class="primary" id="print">Print / save as PDF <span lang="es">/ Imprimir</span></button>
+    <button type="button" class="secondary" id="again">Answer again <span lang="es">/ Responder de nuevo</span></button>
+  </div>
+</section>
+</main>
+
+<footer>
+  <p>Part of the free <a href="../">SMB AI Toolkit</a> · MIT License · Benchmarks: Cisco AI Readiness Index, Mexico results (220 organizations), as reported by DPL News, Oct 2026. Your score is a self-assessment, not the Cisco methodology. Made by Rodrigo.</p>
+  <p class="noprint">Next: <a href="../ai-depth-ladder/">AI Depth Ladder</a> — <span lang="es">¿la IA vive en pestañas o en procesos?</span></p>
+</footer>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var P={
+    strategy:{n:"Strategy",es:"Estrategia",bench:"In Mexico, 57% of organizations have an AI budget, but only 35% measure objectives.",
+      tips:["Pick ONE business problem for AI this quarter, with a number attached (hours, errors, response time).","Write down the baseline before you buy anything.","Use the AI ROI questions: what changed, by how much, and who checked?"]},
+    data:{n:"Data",es:"Datos",bench:"Only 13% of organizations in Mexico say their data is always ready and clean.",
+      tips:["Make a list of the 10 documents or spreadsheets your team uses most, and where each one lives.","Pick one source of truth for prices, products and customers.","Clean one file before you automate anything on top of it."]},
+    talent:{n:"Talent",es:"Talento",bench:"Only 11% of organizations in Mexico say they have enough in-house AI talent.",
+      tips:["Name one AI champion per area — someone curious, not necessarily technical.","Give everyone 30 minutes a week to practice on a real task.","Share one 'before/after' example per month in a team meeting."]},
+    infra:{n:"Infrastructure",es:"Infraestructura",bench:"Only 8% of organizations in Mexico say their infrastructure is ready for AI.",
+      tips:["Move from personal to company accounts for the AI tools you already use.","Make sure files live in shared cloud storage, not on one laptop or phone.","Check that the tools you use can export your data."]},
+    gov:{n:"Governance",es:"Gobernanza",bench:"Only 9% of organizations in Mexico rate their AI governance as high.",
+      tips:["Write a one-page AI policy: approved tools, what data never goes in, who reviews outputs.","List every AI tool people actually use today (including free ones).","Decide who approves a new AI tool before anyone signs up."]}
+  };
+  var Q=[
+    {p:"strategy",t:"Is there a specific business problem you want AI to solve?",es:"¿Hay un problema de negocio concreto que quieras resolver con IA?",
+      o:["No, we're just curious","Some ideas, nothing chosen","Yes, one problem chosen","Yes, with a target number and an owner"]},
+    {p:"strategy",t:"Do you measure what AI changes (time, cost, errors, sales)?",es:"¿Mides lo que cambia con la IA?",
+      o:["No","We have a feeling it helps","We measured once","We track it regularly against a baseline"]},
+    {p:"data",t:"Where does your key business information live (prices, customers, inventory)?",es:"¿Dónde vive tu información clave?",
+      o:["In people's heads and chats","Scattered files and emails","Mostly in shared spreadsheets","In one system everyone uses"]},
+    {p:"data",t:"How clean and up to date is that information?",es:"¿Qué tan limpia y actualizada está?",
+      o:["We often find errors","Mostly OK, with duplicates","Good, reviewed sometimes","Clean, with someone responsible for it"]},
+    {p:"talent",t:"How many people on your team use AI well on real work?",es:"¿Cuántas personas usan bien la IA en trabajo real?",
+      o:["Nobody","One person, on their own","A few people","Most of the team"]},
+    {p:"talent",t:"Has anyone received AI training?",es:"¿Alguien ha recibido capacitación en IA?",
+      o:["No","Self-taught with videos","Some short training","A plan by role, with practice time"]},
+    {p:"infra",t:"Which AI tools and accounts do people use?",es:"¿Qué herramientas y cuentas de IA usan?",
+      o:["None","Free personal accounts","Some paid accounts, personal","Company accounts, managed centrally"]},
+    {p:"infra",t:"Are your files and systems in the cloud and connected?",es:"¿Tus archivos y sistemas están en la nube y conectados?",
+      o:["Mostly paper or local files","Some cloud, not organized","Shared cloud folders","Cloud systems that share data"]},
+    {p:"gov",t:"Do you have rules for what data can go into AI tools?",es:"¿Tienes reglas sobre qué datos pueden ir a la IA?",
+      o:["No","Informal, verbal","Written, but not everyone knows","Written, shared and followed"]},
+    {p:"gov",t:"Does someone review AI output before it reaches a customer?",es:"¿Alguien revisa lo que produce la IA antes de que llegue a un cliente?",
+      o:["No","Sometimes","Usually","Always, with a named reviewer"]}
+  ];
+  var TIERS=[
+    {min:0,n:"Laggard",es:"Rezagado",mx:"15%",d:"AI isn't on solid ground yet. That's fine — start with the basics below before buying any tool."},
+    {min:11,n:"Follower",es:"Seguidor",mx:"42%",d:"You've started, but the foundations are thin. Fix your weakest pillar before scaling."},
+    {min:19,n:"Chaser",es:"Retador",mx:"39%",d:"Good foundations. Focus on measuring results and writing down how AI is used."},
+    {min:26,n:"Pacesetter",es:"Líder",mx:"4%",d:"You're ahead of most. Keep measuring, and build AI into your core processes."}
+  ];
+  var form=document.getElementById("form");
+  var html="";
+  Q.forEach(function(q,i){
+    html+="<fieldset class='q'><legend>"+(i+1)+". "+q.t+" <span class='es' lang='es'>"+q.es+"</span></legend>";
+    q.o.forEach(function(o,v){
+      html+="<label class='opt'><input type='radio' name='q"+i+"' value='"+v+"'><span>"+o+"</span></label>";
+    });
+    html+="</fieldset>";
+  });
+  form.innerHTML=html;
+
+  function compute(){
+    var sc={strategy:0,data:0,talent:0,infra:0,gov:0}, total=0, missing=[];
+    Q.forEach(function(q,i){
+      var c=form.querySelector("input[name=q"+i+"]:checked");
+      if(!c){missing.push(i+1);return;}
+      var v=+c.value; sc[q.p]+=v; total+=v;
+    });
+    return {sc:sc,total:total,missing:missing};
+  }
+  function render(r){
+    var tier=TIERS.filter(function(t){return r.total>=t.min;}).pop();
+    var keys=Object.keys(P).sort(function(a,b){return r.sc[a]-r.sc[b];});
+    var weak=keys[0];
+    var h="<p class='score'>"+r.total+" / 30</p><p><strong>"+tier.n+"</strong> <span lang='es'>("+tier.es+")</span> — "+tier.d+"</p>"+
+      "<p class='muted'>For reference, Cisco's AI Readiness Index placed "+tier.mx+" of organizations in Mexico in this tier.</p>";
+    h+="<ul class='pillars'>";
+    Object.keys(P).forEach(function(k){
+      var v=r.sc[k];
+      h+="<li><div class='prow'><span>"+P[k].n+" <span class='muted' lang='es'>"+P[k].es+"</span></span><span>"+v+" / 6</span></div>"+
+        "<div class='track' role='img' aria-label='"+P[k].n+": "+v+" of 6'><div class='fill' style='width:"+(v/6*100)+"%'></div></div></li>";
+    });
+    h+="</ul>";
+    h+="<div class='callout'><strong>Start here: "+P[weak].n+"</strong> <span lang='es'>(empieza por aquí: "+P[weak].es+")</span>"+
+      "<p class='muted' style='margin:4px 0 0'>"+P[weak].bench+"</p><ol>"+P[weak].tips.map(function(t){return "<li>"+t+"</li>";}).join("")+"</ol></div>";
+    h+="<p class='muted'>AI doesn't fix the mess. It automates it. <span lang='es'>La IA no arregla el desorden: lo automatiza.</span></p>";
+    document.getElementById("out").innerHTML=h;
+    var res=document.getElementById("result"); res.hidden=false; res.focus(); res.scrollIntoView({behavior:"smooth"});
+  }
+  document.getElementById("go").addEventListener("click",function(){
+    var r=compute(), msg=document.getElementById("msg");
+    if(r.missing.length){
+      msg.textContent="Please answer question"+(r.missing.length>1?"s ":" ")+r.missing.join(", ")+". / Falta responder: "+r.missing.join(", ")+".";
+      form.querySelector("input[name=q"+(r.missing[0]-1)+"]").focus(); return;
+    }
+    msg.textContent=""; render(r);
+  });
+  document.getElementById("print").addEventListener("click",function(){window.print();});
+  document.getElementById("again").addEventListener("click",function(){
+    form.reset(); document.getElementById("result").hidden=true;
+    form.querySelector("input").focus(); window.scrollTo(0,0);
+  });
+})();
+</script>
+</body>
+</html>
