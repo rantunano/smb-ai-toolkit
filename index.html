@@ -6,53 +6,80 @@
 <title>SMB AI Toolkit — free AI tools for small businesses</title>
 <meta name="description" content="Free, no-sign-up tools to help small businesses use AI with measurable results. Runs in your browser.">
 <style>
-:root{--bg:#f7f7f5;--surface:#fff;--text:#1c1c1e;--muted:#4f4f55;--border:#c9c9cf;--accent:#0b5cad;--focus:#b35c00}
-@media (prefers-color-scheme:dark){:root{--bg:#141416;--surface:#1e1e21;--text:#f1f1f3;--muted:#b9b9c0;--border:#4a4a52;--accent:#7db7f0;--focus:#ffb35c}}
+:root{--bg:#f7f7f5;--surface:#fff;--text:#1c1c1a;--muted:#56564f;--line:#d9d9d3;--accent:#0b5cad;--accent-soft:#e6eef8;--focus:#c25e00;--radius:10px;--font:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif}
+@media (prefers-color-scheme:dark){:root{--bg:#151513;--surface:#1f1f1c;--text:#ecece6;--muted:#b4b4ab;--line:#3a3a35;--accent:#7db4ef;--accent-soft:#1d2c3d;--focus:#ffb062}}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);font:1rem/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
-.wrap{max-width:860px;margin:0 auto;padding:32px 16px 64px}
-h1{font-size:clamp(1.8rem,5vw,2.4rem);line-height:1.15;margin:0 0 4px}
-.es{display:block;color:var(--muted);font-style:italic;font-size:.95rem}
-h1 .es{font-size:1.05rem;margin-top:4px}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--font);font-size:1.0625rem;line-height:1.55}
 a{color:var(--accent)}
-:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
-.cards{list-style:none;padding:0;margin:24px 0 0;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
-.cards li{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px}
-.cards h2{font-size:1.15rem;margin:0 0 2px}
-.cards p{margin:8px 0 0;font-size:.95rem}
-.soon{color:var(--muted)}
-.tag{display:inline-block;font-size:.78rem;font-weight:600;border:1px solid var(--border);border-radius:999px;padding:1px 8px;color:var(--muted);margin-top:8px}
-footer{margin-top:32px;color:var(--muted);font-size:.9rem}
+a:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.skip{position:absolute;left:-999px;top:0;background:var(--surface);padding:.5rem 1rem}
+.skip:focus{left:1rem;top:1rem}
+.wrap{max-width:780px;margin:0 auto;padding:1.5rem 16px 3rem}
+h1{font-weight:800;font-size:clamp(1.8rem,5vw,2.4rem);line-height:1.2;margin:0}
+.es{display:block;color:var(--muted);font-style:italic;font-weight:400}
+h1 .es{font-size:1.1rem;margin-top:.25rem}
+.lead{font-size:1.1rem}
+.note{font-size:.92rem;color:var(--muted)}
+.grid{display:grid;gap:1rem;grid-template-columns:1fr;margin-top:1.5rem}
+@media (min-width:620px){.grid{grid-template-columns:1fr 1fr}}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:1.1rem;position:relative}
+.card h2{font-size:1.2rem;margin:0}
+.card h2 a{text-decoration:none}
+.card h2 a::after{content:"";position:absolute;inset:0}
+.card h2 a:hover{text-decoration:underline}
+.card .es{font-size:.92rem;margin:.15rem 0 .5rem}
+.card p{margin:.3rem 0}
+.emo{font-size:1.6rem;display:block;margin-bottom:.3rem}
+.badge{display:inline-block;background:var(--accent-soft);color:var(--accent);border-radius:999px;padding:.05rem .6rem;font-size:.8rem;font-weight:700;margin-left:.3rem;vertical-align:middle}
+.soon{border-style:dashed}
+.soon ul{margin:.4rem 0 0;padding-left:1.1rem;color:var(--muted)}
+footer{margin-top:2.5rem;padding-top:1rem;border-top:1px solid var(--line);font-size:.92rem;color:var(--muted)}
 </style>
 </head>
 <body>
-<main class="wrap">
-  <h1>SMB AI Toolkit <span class="es" lang="es">Herramientas de IA para PyMEs</span></h1>
-  <p>Free tools to help small businesses use AI with results you can measure. No sign-up. Everything runs in your browser.
-  <span class="es" lang="es">Herramientas gratuitas, sin registro. Todo corre en tu navegador.</span></p>
-
-  <ul class="cards">
-    <li>
-      <h2><a href="ai-depth-ladder/">AI Depth Ladder</a></h2>
-      <span class="es" lang="es">Escalera de profundidad de IA</span>
-      <p>Is AI in your team's browser tabs, or in your processes? Find your rung and print a one-page AI SOP.</p>
-      <span class="tag">New</span>
-    </li>
-    <li>
-      <h2><a href="ai-readiness-check/">AI Readiness Check</a></h2>
-      <span class="es" lang="es">Diagnóstico de preparación para IA</span>
-      <p>10 questions across strategy, data, talent, infrastructure and governance. Get your score and where to start.</p>
-    </li>
-    <li class="soon">
-      <h2>More tools coming</h2>
-      <span class="es" lang="es">Próximamente más herramientas</span>
-      <p>AI ROI Tracker, Automation Hours Calculator, AI Learning Path, Accessibility Quick Check.</p>
-    </li>
-  </ul>
-
+<a class="skip" href="#main">Skip to content</a>
+<div class="wrap">
+  <header>
+    <h1>SMB AI Toolkit <span class="es" lang="es">Herramientas de IA para PyMEs</span></h1>
+    <p class="lead">Free tools to help small businesses use AI with results you can measure. No sign-up. Everything runs in your browser.</p>
+    <p class="note" lang="es"><em>Herramientas gratuitas para usar IA con resultados medibles. Sin registro. Todo corre en tu navegador.</em></p>
+  </header>
+  <main id="main">
+    <div class="grid">
+      <article class="card">
+        <span class="emo" aria-hidden="true">🛒</span>
+        <h2><a href="ai-shelf-check/">AI Shelf Check</a><span class="badge">New</span></h2>
+        <span class="es" lang="es">¿La IA puede leer tu tienda?</span>
+        <p>Score one product page in 3 minutes. Get your fixes and the structured data ready to paste.</p>
+      </article>
+      <article class="card">
+        <span class="emo" aria-hidden="true">🪜</span>
+        <h2><a href="ai-depth-ladder/">AI Depth Ladder</a></h2>
+        <span class="es" lang="es">Escalera de profundidad de IA</span>
+        <p>Is AI in your team's browser tabs, or in your processes? Find your rung and print a one-page AI SOP.</p>
+      </article>
+      <article class="card">
+        <span class="emo" aria-hidden="true">🧭</span>
+        <h2><a href="ai-readiness-check/">AI Readiness Check</a></h2>
+        <span class="es" lang="es">Diagnóstico de preparación para IA</span>
+        <p>10 questions across strategy, data, talent, infrastructure and governance. Get your score and where to start.</p>
+      </article>
+      <article class="card soon">
+        <span class="emo" aria-hidden="true">🛠️</span>
+        <h2>More tools coming</h2>
+        <span class="es" lang="es">Próximamente más herramientas</span>
+        <ul>
+          <li>AI ROI Tracker</li>
+          <li>Automation Hours Calculator</li>
+          <li>AI Learning Path</li>
+          <li>Accessibility Quick Check</li>
+        </ul>
+      </article>
+    </div>
+  </main>
   <footer>
     <p>Made by Rodrigo · <a href="https://github.com/rantunano/smb-ai-toolkit">Source on GitHub</a> · MIT License</p>
   </footer>
-</main>
+</div>
 </body>
 </html>
