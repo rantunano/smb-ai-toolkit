@@ -1,0 +1,620 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Shelf Check — SMB AI Toolkit</title>
+<meta name="description" content="Free tool: check if AI assistants (and people) can read your product page. Get a 10-point score, your fixes, and schema.org Product data ready to paste. Runs in your browser, no sign-up.">
+<meta property="og:title" content="AI Shelf Check — can the AI read your store?">
+<meta property="og:description" content="Score one product page in 3 minutes, get your fixes and the structured data ready to paste. Free, no sign-up.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://rantunano.github.io/smb-ai-toolkit/ai-shelf-check/">
+<style>
+:root{
+  --bg:#f7f7f5; --surface:#ffffff; --text:#1c1c1a; --muted:#56564f; --line:#d9d9d3;
+  --accent:#0b5cad; --accent-ink:#ffffff; --accent-soft:#e6eef8;
+  --good:#1e6b34; --good-soft:#e4f2e8; --warn:#8a5a00; --warn-soft:#fbf0d9; --bad:#a3261b; --bad-soft:#fbe5e2;
+  --focus:#c25e00; --radius:10px; --max:780px;
+  --font: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#151513; --surface:#1f1f1c; --text:#ececE6; --muted:#b4b4ab; --line:#3a3a35;
+    --accent:#7db4ef; --accent-ink:#0d1b2a; --accent-soft:#1d2c3d;
+    --good:#8fd3a2; --good-soft:#1b2d20; --warn:#f0c46a; --warn-soft:#2f2614; --bad:#f39a8f; --bad-soft:#33201d;
+    --focus:#ffb062;
+  }
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--font);font-size:1.0625rem;line-height:1.55}
+a{color:var(--accent)}
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,summary:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.skip{position:absolute;left:-999px;top:0;background:var(--surface);padding:.5rem 1rem;z-index:10}
+.skip:focus{left:1rem;top:1rem}
+.wrap{max-width:var(--max);margin:0 auto;padding:1.25rem 16px 3rem}
+nav.crumbs{font-size:.9rem;color:var(--muted);margin-bottom:1rem}
+nav.crumbs ol{list-style:none;padding:0;margin:0;display:flex;gap:.4rem;flex-wrap:wrap}
+nav.crumbs li+li::before{content:"›";margin-right:.4rem;color:var(--muted)}
+span[lang=es],p[lang=es]{font-style:italic}
+h1{font-weight:800;font-size:clamp(1.7rem,5vw,2.2rem);line-height:1.2;margin:.2rem 0 .1rem}
+.es{display:block;color:var(--muted);font-style:italic;font-weight:400}
+h1 .es{font-size:1.05rem;margin-top:.25rem}
+h2{font-size:1.3rem;margin:0 0 .2rem}
+h2 .es,h3 .es,legend .es,label .es{font-size:.9rem}
+h3{font-size:1.05rem;margin:1.2rem 0 .3rem}
+p{margin:.5rem 0}
+.lead{font-size:1.1rem}
+.note{font-size:.92rem;color:var(--muted);border-left:3px solid var(--line);padding-left:.75rem}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:1.1rem 1.1rem 1.2rem;margin:1.25rem 0}
+fieldset{border:0;padding:0;margin:0 0 1rem}
+legend{font-weight:700;padding:0;margin-bottom:.4rem}
+.field{margin:.85rem 0}
+.field>label,.qlabel{display:block;font-weight:600;margin-bottom:.25rem}
+.hint{display:block;font-size:.88rem;color:var(--muted);font-weight:400;margin-top:.1rem}
+input[type=text],input[type=url],input[type=number],select,textarea{width:100%;font:inherit;color:var(--text);background:var(--bg);border:1px solid var(--muted);border-radius:8px;padding:.55rem .65rem;min-height:44px}
+textarea{min-height:90px;resize:vertical}
+.row{display:grid;gap:.75rem;grid-template-columns:1fr}
+@media (min-width:560px){.row.two{grid-template-columns:1fr 1fr}.row.three{grid-template-columns:1fr 1fr 1fr}}
+.choices{display:flex;flex-wrap:wrap;gap:.5rem}
+.choices label{display:flex;align-items:center;gap:.4rem;border:1px solid var(--line);border-radius:8px;padding:.45rem .7rem;min-height:44px;cursor:pointer;background:var(--bg);font-weight:500}
+.choices input{width:1.1rem;height:1.1rem;margin:0;accent-color:var(--accent)}
+.q{padding:.8rem 0;border-top:1px solid var(--line)}
+.q:first-of-type{border-top:0}
+.faq{border:1px dashed var(--line);border-radius:8px;padding:.6rem .7rem;margin:.6rem 0}
+.faq .field{margin:.4rem 0}
+button{font:inherit;font-weight:600;border-radius:8px;padding:.6rem 1rem;min-height:44px;cursor:pointer;border:1px solid var(--accent)}
+.btn{background:var(--accent);color:var(--accent-ink)}
+.btn-ghost{background:transparent;color:var(--accent)}
+.actions{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:1rem}
+.score{display:flex;align-items:baseline;gap:.6rem;flex-wrap:wrap}
+.score .num{font-size:2.6rem;font-weight:800;line-height:1}
+.badge{display:inline-block;border-radius:999px;padding:.15rem .7rem;font-weight:700;font-size:.95rem}
+.b-good{background:var(--good-soft);color:var(--good)}
+.b-warn{background:var(--warn-soft);color:var(--warn)}
+.b-bad{background:var(--bad-soft);color:var(--bad)}
+.meter{height:12px;background:var(--bg);border:1px solid var(--line);border-radius:999px;overflow:hidden;margin:.6rem 0}
+.meter span{display:block;height:100%;background:var(--accent)}
+ul.checks{list-style:none;padding:0;margin:.5rem 0}
+ul.checks li{display:grid;grid-template-columns:1.6rem 1fr;gap:.4rem;padding:.55rem 0;border-top:1px solid var(--line)}
+ul.checks li:first-child{border-top:0}
+.ico{font-weight:800}
+.ok .ico{color:var(--good)} .no .ico{color:var(--bad)} .maybe .ico{color:var(--warn)}
+.emo{font-size:1.15rem}
+.tag{font-size:.8rem;font-weight:700;border:1px solid var(--line);border-radius:999px;padding:0 .5rem;margin-left:.25rem;color:var(--muted)}
+ul.why{list-style:none;padding:0}
+ul.why li{display:grid;grid-template-columns:2rem 1fr;gap:.3rem;margin:.6rem 0}
+ul.why .emo{font-size:1.35rem;line-height:1.3}
+.fix{display:block;font-size:.95rem;color:var(--muted)}
+.blocker{background:var(--bad-soft);color:var(--text);border-left:4px solid var(--bad);padding:.7rem .8rem;border-radius:6px;margin:.8rem 0}
+pre{font-family:var(--mono);font-size:.82rem;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:.8rem;overflow:auto;max-height:420px;white-space:pre}
+.plain{white-space:pre-wrap}
+.status{min-height:1.4em;font-size:.92rem;color:var(--good);font-weight:600}
+details{margin:.6rem 0}
+summary{cursor:pointer;font-weight:600}
+ol.sources{padding-left:1.2rem}
+ol.sources li{margin:.45rem 0}
+footer{margin-top:2.5rem;padding-top:1rem;border-top:1px solid var(--line);font-size:.92rem;color:var(--muted)}
+footer p{margin:.4rem 0}
+[hidden]{display:none !important}
+@media (prefers-reduced-motion:no-preference){.meter span{transition:width .4s ease}}
+@media print{
+  body{background:#fff;color:#000;font-size:11pt}
+  .skip,nav.crumbs,#form-card,.actions,.no-print,footer .related{display:none !important}
+  .card{border:1px solid #999;break-inside:avoid}
+  pre{max-height:none;white-space:pre-wrap;word-break:break-all}
+  a{color:#000}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="wrap">
+  <nav class="crumbs" aria-label="Breadcrumb">
+    <ol>
+      <li><a href="../">SMB AI Toolkit</a></li>
+      <li aria-current="page">AI Shelf Check</li>
+    </ol>
+  </nav>
+
+  <header>
+    <h1>AI Shelf Check <span class="es" lang="es">¿La IA puede leer tu tienda?</span></h1>
+    <p class="lead">More shoppers now ask an AI assistant before they buy. Check if one of your product pages is easy to read — for AI and for people — and get the fixes plus the structured data ready to paste.</p>
+    <p class="lead es" lang="es">Revisa si una página de producto es fácil de leer para la IA y para las personas, y obtén tus arreglos y los datos estructurados listos para pegar.</p>
+    <p class="note">Runs 100% in your browser. Nothing is sent anywhere. <span lang="es">Todo se queda en tu navegador.</span></p>
+  </header>
+
+  <main id="main">
+    <form id="form" class="card" novalidate aria-describedby="form-intro">
+      <div id="form-card">
+      <h2><span class="emo" aria-hidden="true">🛍️</span> 1. Your product <span class="es" lang="es">Tu producto</span></h2>
+      <p id="form-intro" class="note">Pick one product you want to sell this season. Copy what is on the page today — not what you plan to add. <span lang="es">Elige un producto y copia lo que hoy dice su página.</span></p>
+
+      <div class="field">
+        <label for="name">Product name, exactly as shown <span class="es" lang="es">Nombre del producto, tal como aparece</span></label>
+        <input id="name" type="text" autocomplete="off" placeholder="Waterproof women's hiking boot, leather, size 24">
+      </div>
+      <div class="row two">
+        <div class="field">
+          <label for="brand">Brand <span class="es" lang="es">Marca</span></label>
+          <input id="brand" type="text" autocomplete="off">
+        </div>
+        <div class="field">
+          <label for="sku">SKU or barcode (GTIN) <span class="es" lang="es">SKU o código de barras</span><span class="hint">Optional / opcional</span></label>
+          <input id="sku" type="text" autocomplete="off">
+        </div>
+      </div>
+      <div class="field">
+        <label for="desc">Description <span class="es" lang="es">Descripción</span><span class="hint">Paste it. Specs count: size, material, compatibility, what's in the box. / Pégala: medidas, material, qué incluye.</span></label>
+        <textarea id="desc"></textarea>
+      </div>
+      <div class="row three">
+        <div class="field">
+          <label for="price">Price <span class="es" lang="es">Precio</span></label>
+          <input id="price" type="number" inputmode="decimal" min="0" step="0.01">
+        </div>
+        <div class="field">
+          <label for="currency">Currency <span class="es" lang="es">Moneda</span></label>
+          <select id="currency"><option>MXN</option><option>USD</option><option>EUR</option><option>COP</option><option>CLP</option><option>ARS</option><option>PEN</option></select>
+        </div>
+        <div class="field">
+          <label for="avail">Availability <span class="es" lang="es">Disponibilidad</span></label>
+          <select id="avail">
+            <option value="InStock">In stock / En existencia</option>
+            <option value="OutOfStock">Out of stock / Agotado</option>
+            <option value="PreOrder">Pre-order / Preventa</option>
+            <option value="BackOrder">Back order / Sobre pedido</option>
+          </select>
+        </div>
+      </div>
+      <div class="row two">
+        <div class="field">
+          <label for="url">Product page URL <span class="es" lang="es">URL de la página</span></label>
+          <input id="url" type="url" inputmode="url" placeholder="https://yourstore.com/product">
+        </div>
+        <div class="field">
+          <label for="img">Main image URL <span class="es" lang="es">URL de la imagen principal</span></label>
+          <input id="img" type="url" inputmode="url">
+        </div>
+      </div>
+
+      <h3><span class="emo" aria-hidden="true">🚚</span> Shipping and returns <span class="es" lang="es">Envío y devoluciones</span></h3>
+      <div class="row three">
+        <div class="field">
+          <label for="country">Ships to (country code) <span class="es" lang="es">Envía a (código de país)</span></label>
+          <input id="country" type="text" value="MX" maxlength="2" autocomplete="off" aria-describedby="country-hint">
+          <span id="country-hint" class="hint">MX, US, CO…</span>
+        </div>
+        <div class="field">
+          <label for="shipcost">Shipping cost <span class="es" lang="es">Costo de envío</span><span class="hint">0 = free / gratis</span></label>
+          <input id="shipcost" type="number" inputmode="decimal" min="0" step="0.01">
+        </div>
+        <div class="field">
+          <label for="shipdays">Delivery, max days <span class="es" lang="es">Entrega, días máx.</span></label>
+          <input id="shipdays" type="number" inputmode="numeric" min="0" step="1">
+        </div>
+      </div>
+      <div class="row two">
+        <div class="field">
+          <label for="retdays">Days to return <span class="es" lang="es">Días para devolver</span><span class="hint">0 = no returns / sin devoluciones</span></label>
+          <input id="retdays" type="number" inputmode="numeric" min="0" step="1">
+        </div>
+        <div class="field">
+          <label for="retpolicy">Returns policy, in one sentence <span class="es" lang="es">Política de devolución, en una frase</span></label>
+          <input id="retpolicy" type="text" autocomplete="off" placeholder="Free returns within 30 days, unused, with tag.">
+        </div>
+      </div>
+
+      <h3><span class="emo" aria-hidden="true">⭐</span> Reviews <span class="es" lang="es">Reseñas</span> <span class="hint">Only if they are visible on the page / Solo si se ven en la página</span></h3>
+      <div class="row two">
+        <div class="field">
+          <label for="rating">Average rating (1–5) <span class="es" lang="es">Calificación promedio</span></label>
+          <input id="rating" type="number" inputmode="decimal" min="1" max="5" step="0.1">
+        </div>
+        <div class="field">
+          <label for="reviews">Number of reviews <span class="es" lang="es">Número de reseñas</span></label>
+          <input id="reviews" type="number" inputmode="numeric" min="0" step="1">
+        </div>
+      </div>
+
+      <h3><span class="emo" aria-hidden="true">💬</span> Top questions customers ask <span class="es" lang="es">Preguntas que más te hacen</span></h3>
+      <p class="note">Write the ones you answer again and again on WhatsApp or DMs. Fill 3 to 5. <span lang="es">Las que respondes una y otra vez por WhatsApp.</span></p>
+      <div id="faqs"></div>
+      </div>
+
+      <h2 style="margin-top:1.5rem"><span class="emo" aria-hidden="true">📱</span> 2. What is on the page today <span class="es" lang="es">Lo que hoy tiene la página</span></h2>
+      <p class="note">Open the product page on your phone and answer honestly. <span lang="es">Abre la página en tu celular y responde con honestidad.</span></p>
+      <div id="questions"></div>
+
+      <div class="actions">
+        <button type="submit" class="btn">Check my page / Revisar</button>
+        <button type="button" class="btn-ghost" id="example">Fill an example / Ejemplo</button>
+        <button type="reset" class="btn-ghost" id="reset">Clear / Borrar</button>
+      </div>
+    </form>
+
+    <section id="results" class="card" hidden aria-labelledby="res-title" tabindex="-1">
+      <h2 id="res-title"><span class="emo" aria-hidden="true">🎯</span> Your result <span class="es" lang="es">Tu resultado</span></h2>
+      <div class="score"><span class="num" id="score-num">0</span><span>/ 10</span> <span id="score-badge" class="badge"></span></div>
+      <div class="meter" aria-hidden="true"><span id="meter" style="width:0"></span></div>
+      <p id="score-text"></p>
+      <div id="blocker" class="blocker" hidden></div>
+      <h3>Checks, worst first <span class="es" lang="es">Revisiones, lo más urgente primero</span></h3>
+      <ul class="checks" id="checks"></ul>
+      <div class="actions no-print">
+        <button type="button" class="btn" id="print">Print / save as PDF <span lang="es">· Imprimir</span></button>
+      </div>
+    </section>
+
+    <section id="out-jsonld" class="card" hidden aria-labelledby="jl-title">
+      <h2 id="jl-title"><span class="emo" aria-hidden="true">🧩</span> Structured data, ready to paste <span class="es" lang="es">Datos estructurados listos para pegar</span></h2>
+      <p>This is schema.org <code>Product</code> markup in JSON-LD. Paste it in the product page's HTML (or ask your developer / platform support where custom code goes). Many store platforms already generate it — check first, so you don't publish it twice.</p>
+      <p class="es" lang="es">Pégalo en el HTML de la página de producto. Muchas plataformas ya lo generan: revisa antes para no duplicarlo.</p>
+      <pre id="jsonld" tabindex="0" aria-label="Product JSON-LD code"></pre>
+      <div class="actions no-print">
+        <button type="button" class="btn" data-copy="jsonld">Copy code / Copiar</button>
+      </div>
+      <p class="status no-print" role="status" aria-live="polite" id="st-jsonld"></p>
+      <div id="faq-block" hidden>
+        <h3>FAQ markup (optional) <span class="es" lang="es">Preguntas frecuentes (opcional)</span></h3>
+        <p class="note">Only use it if the questions and answers are visible on the page. Google shows FAQ rich results only for a few authoritative sites, so don't expect them in search; the markup still keeps your answers machine-readable. <span lang="es">Úsalo solo si las preguntas se ven en la página.</span></p>
+        <pre id="faqld" tabindex="0" aria-label="FAQ JSON-LD code"></pre>
+        <div class="actions no-print"><button type="button" class="btn-ghost" data-copy="faqld">Copy FAQ code / Copiar</button></div>
+        <p class="status no-print" role="status" aria-live="polite" id="st-faqld"></p>
+      </div>
+      <p class="note">Test it before and after publishing: <a href="https://search.google.com/test/rich-results">Google Rich Results Test</a> · <a href="https://validator.schema.org/">Schema Markup Validator</a>. Structured data helps machines understand your page. It does not guarantee that any AI assistant or search engine will show or recommend your product.</p>
+    </section>
+
+    <section id="out-plain" class="card" hidden aria-labelledby="pl-title">
+      <h2 id="pl-title"><span class="emo" aria-hidden="true">📋</span> Plain-text product card <span class="es" lang="es">Ficha en texto plano</span></h2>
+      <p>The same facts as readable text. Use it as the first block of your product description, on marketplaces, or as your saved WhatsApp reply. <span lang="es">Úsala al inicio de tu descripción o como respuesta guardada de WhatsApp.</span></p>
+      <pre id="plain" class="plain" tabindex="0" aria-label="Plain-text product card"></pre>
+      <div class="actions no-print"><button type="button" class="btn" data-copy="plain">Copy text / Copiar</button></div>
+      <p class="status no-print" role="status" aria-live="polite" id="st-plain"></p>
+    </section>
+
+    <section class="card" aria-labelledby="why-title">
+      <h2 id="why-title"><span class="emo" aria-hidden="true">🔍</span> Why this matters now <span class="es" lang="es">Por qué importa ahora</span></h2>
+      <ul class="why">
+        <li><span class="emo" aria-hidden="true">🤖</span><span>Salesforce forecasts that 20% of 2026 holiday e-commerce traffic will come from AI chat agents, and says half of shoppers use an AI assistant at some point in their buying journey.<sup><a href="#src-2">2</a></sup></span></li>
+        <li><span class="emo" aria-hidden="true">📈</span><span>Adobe expects traffic from AI tools to U.S. retail sites to grow 130% this holiday season (Nov 1–Dec 31, 2026).<sup><a href="#src-1">1</a></sup></span></li>
+        <li><span class="emo" aria-hidden="true">🇲🇽</span><span>In Mexico, Adyen's Retail Report 2026 found that 42% of shoppers used AI assistants when buying and 48% would let AI handle the whole purchase, payment included.<sup><a href="#src-3">3</a></sup> Clear returns were a top priority (47%) when delegating a purchase to AI.<sup><a href="#src-4">4</a></sup></span></li>
+        <li><span class="emo" aria-hidden="true">📊</span><span>In an exploratory test of AI answers in Mexico, 71% of sources cited for phones were media, reviews and comparison sites; 9% were stores.<sup><a href="#src-4">4</a></sup></span></li>
+      </ul>
+      <p><span class="emo" aria-hidden="true">♿</span> Everything that makes a page readable for a machine also helps people who use screen readers.</p>
+      <p class="es" lang="es">Si tu página es una foto, un precio dentro de una imagen y "pregunta por DM", la IA no tiene nada que leer. Y todo lo que la hace legible para una máquina también ayuda a quien usa lector de pantalla.</p>
+    </section>
+
+    <section class="card" aria-labelledby="src-title" id="sources">
+      <h2 id="src-title"><span class="emo" aria-hidden="true">📚</span> Sources <span class="es" lang="es">Fuentes</span></h2>
+      <h3>Data <span class="es" lang="es">Datos</span></h3>
+      <ol class="sources">
+        <li id="src-1">Adobe, "U.S. Holiday Shopping Season to Hit Record $275.1 Billion Online, Rising 6.7% YoY", press release, Sep 28, 2026. Forecast based on Adobe Analytics (1+ trillion visits to U.S. retail sites, 100M SKUs); AI traffic measured as shoppers clicking a link from an AI tool. <a href="https://news.adobe.com/news/2026/09/adobe-us-holiday-shopping-season-to-hit-record">news.adobe.com</a></li>
+        <li id="src-2">Salesforce, "2026 Holiday Predictions", blog by Caila Schwartz, Jul 20, 2026. Methodology not published on the page. <a href="https://www.salesforce.com/blog/holiday-retail-predictions-2026/">salesforce.com</a></li>
+        <li id="src-3">Adyen, Retail Report 2026 — Mexico figures as reported by Mexico Business News, "AI Drives 42% of Shopper Decisions in Mexico", Mar 5, 2026. Sample and fieldwork not published. <a href="https://mexicobusiness.news/ecommerce/news/ai-drives-42-shopper-decisions-mexico">mexicobusiness.news</a> · Adyen page: <a href="https://www.adyen.com/es_MX/index-reports/retail/index-nrf-ch2">adyen.com</a></li>
+        <li id="src-4">Expansión, "Buen Fin 2026: el 48% de los mexicanos dejaría que una IA compre por ellos", Jimena Fuentes, Nov 4, 2026 — reports Adyen (returns priority 47%) and TrendValue's exploratory AI Shelf Report (~1,280 answers from 8 AI tools, Oct 17–20, 2026). <a href="https://expansion.mx/tecnologia/2026/11/04/buen-fin-2026-mexicanos-dejarian-que-una-ia-compre-por-ellos">expansion.mx</a></li>
+      </ol>
+      <h3>How-to references <span class="es" lang="es">Referencias técnicas</span></h3>
+      <ol class="sources" start="5">
+        <li>schema.org — <a href="https://schema.org/Product">Product</a>, <a href="https://schema.org/Offer">Offer</a>, <a href="https://schema.org/MerchantReturnPolicy">MerchantReturnPolicy</a>, <a href="https://schema.org/OfferShippingDetails">OfferShippingDetails</a>.</li>
+        <li>Google Search Central — <a href="https://developers.google.com/search/docs/appearance/structured-data/product">Product structured data</a> and <a href="https://developers.google.com/search/docs/appearance/structured-data/faqpage">FAQ structured data</a>.</li>
+        <li>W3C WAI — <a href="https://www.w3.org/WAI/tutorials/images/">Images tutorial (alt text)</a>.</li>
+      </ol>
+    </section>
+  </main>
+
+  <footer>
+    <p>Part of the free <a href="../">SMB AI Toolkit</a> · MIT License · Data: Adobe, Salesforce, Adyen, TrendValue (see <a href="#sources">Sources</a>).</p>
+    <p>Made by Rodrigo — feedback welcome via <a href="https://github.com/rantunano/smb-ai-toolkit/discussions">GitHub Discussions</a>.</p>
+    <p class="related">Related: <a href="../ai-depth-ladder/">AI Depth Ladder</a> · <a href="../ai-readiness-check/">AI Readiness Check</a></p>
+  </footer>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var $ = function(id){ return document.getElementById(id); };
+
+  // ---- Yes/No questions about the live page ----
+  var QUESTIONS = [
+    {id:"q_price_text", en:"Is the price written as text on the page (not only inside an image)?", es:"¿El precio está escrito como texto (no solo dentro de una imagen)?"},
+    {id:"q_stock_text", en:"Does the page say in text whether it's in stock?", es:"¿La página dice en texto si hay existencia?"},
+    {id:"q_ship_page", en:"Are shipping cost and delivery time shown on the product page itself?", es:"¿El costo y tiempo de envío se ven en la misma página del producto?"},
+    {id:"q_alt", en:"Do the product images have alt text (a short description for screen readers)?", es:"¿Las imágenes tienen texto alternativo?"},
+    {id:"q_reviews", en:"Are customer reviews visible on the page?", es:"¿Se ven reseñas de clientes en la página?"},
+    {id:"q_schema", en:"Does your platform already add structured product data (schema.org Product)?", es:"¿Tu plataforma ya agrega datos estructurados de producto?", unsure:true},
+    {id:"q_gate", en:"Do people need to log in, message you (DM/WhatsApp) or ask to see the price?", es:"¿Hay que iniciar sesión, mandar mensaje o preguntar para ver el precio?", inverse:true}
+  ];
+
+  function buildQuestions(){
+    var box = $("questions"); var html = "";
+    QUESTIONS.forEach(function(q){
+      var opts = [["yes","Yes / Sí"],["no","No"]];
+      if(q.unsure) opts.push(["unsure","Not sure / No sé"]);
+      html += '<fieldset class="q"><legend>'+q.en+' <span class="es" lang="es">'+q.es+'</span></legend><div class="choices">';
+      opts.forEach(function(o){
+        html += '<label><input type="radio" name="'+q.id+'" value="'+o[0]+'"> '+o[1]+'</label>';
+      });
+      html += '</div></fieldset>';
+    });
+    box.innerHTML = html;
+  }
+
+  function buildFaqs(){
+    var box = $("faqs"); var html = "";
+    for(var i=1;i<=5;i++){
+      html += '<div class="faq" role="group" aria-label="Question '+i+'">'+
+        '<div class="field"><label for="fq'+i+'">Question '+i+' <span class="es" lang="es">Pregunta '+i+'</span></label><input id="fq'+i+'" type="text" autocomplete="off"></div>'+
+        '<div class="field"><label for="fa'+i+'">Answer '+i+' <span class="es" lang="es">Respuesta '+i+'</span></label><input id="fa'+i+'" type="text" autocomplete="off"></div></div>';
+    }
+    box.innerHTML = html;
+  }
+
+  function val(id){ var el=$(id); return el ? el.value.trim() : ""; }
+  function num(id){ var v=val(id); if(v==="") return null; var n=Number(v); return isFinite(n)? n : null; }
+  function radio(name){ var el=document.querySelector('input[name="'+name+'"]:checked'); return el? el.value : ""; }
+  function words(s){ return s ? s.split(/\s+/).filter(Boolean).length : 0; }
+  function esc(s){ return String(s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];}); }
+
+  function faqs(){
+    var list=[];
+    for(var i=1;i<=5;i++){ var q=val("fq"+i), a=val("fa"+i); if(q && a) list.push({q:q,a:a}); }
+    return list;
+  }
+
+  function nameIsDescriptive(n){
+    if(!n) return false;
+    var realWords = n.split(/\s+/).filter(function(w){ return /[a-záéíóúñü]{3,}/i.test(w) && !/\d/.test(w); });
+    return realWords.length >= 3;
+  }
+
+  // ---- Scoring: 10 checks, 1 point each ----
+  function evaluate(){
+    var d = {
+      name: val("name"), brand: val("brand"), sku: val("sku"), desc: val("desc"),
+      price: num("price"), currency: val("currency"), avail: val("avail"),
+      url: val("url"), img: val("img"), country: val("country").toUpperCase(),
+      shipcost: num("shipcost"), shipdays: num("shipdays"),
+      retdays: num("retdays"), retpolicy: val("retpolicy"),
+      rating: num("rating"), reviews: num("reviews"), faqs: faqs()
+    };
+    var a = {}; QUESTIONS.forEach(function(q){ a[q.id]=radio(q.id); });
+
+    var checks = [];
+    function add(state, en, es, fixEn, fixEs){ checks.push({state:state,en:en,es:es,fixEn:fixEn,fixEs:fixEs}); }
+
+    add(nameIsDescriptive(d.name) ? "ok":"no",
+      "Product name says what it is", "El nombre dice qué es",
+      "Rename it as type + key feature + material/size, e.g. \"Waterproof women's hiking boot, leather\". Keep the model code at the end.",
+      "Ponle tipo + característica + material/talla. El código de modelo, al final.");
+
+    add(a.q_price_text==="yes" && d.price!==null ? "ok" : (a.q_price_text==="yes" ? "maybe":"no"),
+      "Price is readable text", "El precio es texto legible",
+      "Write the price as text next to the product name, with currency. Don't rely on a price inside a banner or image.",
+      "Escribe el precio como texto junto al nombre, con moneda.");
+
+    add(a.q_stock_text==="yes" ? "ok":"no",
+      "Stock status is written", "La existencia está escrita",
+      "Add a text line like \"In stock — ships in 24 h\" or \"Pre-order, ships Dec 10\".",
+      "Agrega una línea como \"En existencia — se envía en 24 h\".");
+
+    var shipOk = a.q_ship_page==="yes" && d.shipcost!==null && d.shipdays!==null;
+    add(shipOk ? "ok" : (a.q_ship_page==="yes" ? "maybe":"no"),
+      "Shipping cost and time on the product page", "Costo y tiempo de envío en la página",
+      "State both on the product page: \"Free shipping in Mexico, 2–5 business days\". A link to a general policy is not enough.",
+      "Pon ambos en la página: \"Envío gratis en México, 2 a 5 días hábiles\".");
+
+    var retOk = d.retdays!==null && d.retpolicy.length>=10;
+    add(retOk ? "ok" : ((d.retdays!==null || d.retpolicy) ? "maybe":"no"),
+      "Returns policy in plain words", "Política de devolución en palabras simples",
+      "One sentence on the product page: how many days, condition, and who pays the return shipping.",
+      "Una frase en la página: cuántos días, en qué condiciones y quién paga el envío de regreso.");
+
+    var w = words(d.desc);
+    add(w>=60 ? "ok" : (w>=25 ? "maybe":"no"),
+      "Description with real specs ("+w+" words)", "Descripción con especificaciones reales ("+w+" palabras)",
+      "Aim for 60+ words of facts: size, material, compatibility, what's in the box, care. Facts answer questions; adjectives don't.",
+      "Apunta a 60+ palabras de datos: medidas, material, compatibilidad, qué incluye.");
+
+    add(d.faqs.length>=3 ? "ok" : (d.faqs.length>=1 ? "maybe":"no"),
+      "Top customer questions answered on the page ("+d.faqs.length+")", "Preguntas frecuentes respondidas en la página ("+d.faqs.length+")",
+      "Publish the 3–5 questions you answer most on WhatsApp, with short answers, on the product page.",
+      "Publica en la página las 3 a 5 preguntas que más respondes por WhatsApp.");
+
+    add(a.q_alt==="yes" ? "ok":"no",
+      "Images have alt text", "Las imágenes tienen texto alternativo",
+      "Describe each product photo in one line (\"Brown leather hiking boot, side view\"). It helps screen-reader users and any machine reading the page.",
+      "Describe cada foto en una línea. Ayuda a lectores de pantalla y a cualquier máquina.");
+
+    var revOk = a.q_reviews==="yes" && d.reviews!==null && d.reviews>0;
+    add(revOk ? "ok" : (a.q_reviews==="yes" ? "maybe":"no"),
+      "Customer reviews are visible", "Reseñas visibles",
+      "Ask your last buyers for a short review and show them on the page. AI answers lean on reviews and comparisons.",
+      "Pide reseñas a tus últimos compradores y muéstralas en la página.");
+
+    add(a.q_schema==="yes" ? "ok" : (a.q_schema==="unsure" ? "maybe":"no"),
+      "Structured product data (schema.org)", "Datos estructurados de producto",
+      a.q_schema==="unsure" ? "Run your page through the Rich Results Test (link below). If no Product is found, paste the code this tool generates." : "Paste the code generated below, or turn on your platform's structured-data option. Then test it.",
+      "Prueba tu página en el Rich Results Test; si no aparece Product, pega el código generado.");
+
+    var EMOJI = ["🏷️","💲","📦","🚚","↩️","📝","💬","🖼️","⭐","🧩"];
+    checks.forEach(function(c,i){ c.emoji = EMOJI[i]; });
+    var score = checks.filter(function(c){return c.state==="ok";}).length;
+    return {d:d, a:a, checks:checks, score:score};
+  }
+
+  function render(r){
+    var order = {no:0, maybe:1, ok:2};
+    var sorted = r.checks.slice().sort(function(x,y){ return order[x.state]-order[y.state]; });
+    var icon = {ok:"✓", no:"✗", maybe:"!"};
+    var label = {ok:"Done", no:"Missing", maybe:"Partly"};
+    $("checks").innerHTML = sorted.map(function(c){
+      var fix = c.state==="ok" ? "" : '<span class="fix">'+esc(c.fixEn)+' <span lang="es">'+esc(c.fixEs)+'</span></span>';
+      return '<li class="'+c.state+'"><span class="ico" aria-hidden="true">'+icon[c.state]+'</span><span><span class="emo" aria-hidden="true">'+c.emoji+'</span> <strong>'+esc(c.en)+'</strong> <span class="tag">'+label[c.state]+'</span> <span class="es" lang="es">'+esc(c.es)+'</span>'+fix+'</span></li>';
+    }).join("");
+
+    $("score-num").textContent = r.score;
+    $("meter").style.width = (r.score*10)+"%";
+    var b = $("score-badge"), t;
+    if(r.score>=8){ b.className="badge b-good"; b.textContent="Easy to read · Fácil de leer"; t="Good shape. Fix what's left and test the structured data."; }
+    else if(r.score>=5){ b.className="badge b-warn"; b.textContent="Partly readable · Legible a medias"; t="An AI can get the basics, but it will fill the gaps with other sites. Start with the first items below."; }
+    else { b.className="badge b-bad"; b.textContent="Hard to read · Difícil de leer"; t="Right now an assistant has little to work with on this page. The first three fixes below make the biggest difference."; }
+    $("score-text").innerHTML = esc(t)+' <span class="es" lang="es">Empieza por los primeros puntos de la lista.</span>';
+
+    var bl = $("blocker");
+    if(r.a.q_gate==="yes"){
+      bl.hidden=false;
+      bl.innerHTML = "<strong>Blocker:</strong> if people must log in or message you to see the price, nothing outside your chat can read it — not an AI, not a comparison site. Put the price on the page. <span lang=\"es\"><strong>Bloqueo:</strong> si hay que escribirte para ver el precio, nadie fuera de tu chat puede leerlo.</span>";
+    } else { bl.hidden=true; bl.innerHTML=""; }
+
+    var ld = buildJsonLd(r.d);
+    $("jsonld").textContent = ld;
+    var fq = buildFaqLd(r.d.faqs);
+    $("faq-block").hidden = !fq;
+    $("faqld").textContent = fq || "";
+    $("plain").textContent = buildPlain(r.d);
+
+    ["results","out-jsonld","out-plain"].forEach(function(id){ $(id).hidden=false; });
+    $("results").focus();
+    $("results").scrollIntoView({behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto":"smooth", block:"start"});
+  }
+
+  function clean(o){
+    Object.keys(o).forEach(function(k){
+      var v=o[k];
+      if(v===null || v==="" || v===undefined || (Array.isArray(v)&&!v.length)) delete o[k];
+      else if(typeof v==="object" && !Array.isArray(v)){ clean(v); if(!Object.keys(v).length) delete o[k]; }
+    });
+    return o;
+  }
+
+  function wrapScript(obj){
+    var json = JSON.stringify(obj, null, 2).replace(/</g,"\\u003c");
+    return '<script type="application/ld+json">\n'+json+'\n<\/script>';
+  }
+
+  function buildJsonLd(d){
+    var country = /^[A-Z]{2}$/.test(d.country) ? d.country : "MX";
+    var offer = {
+      "@type":"Offer",
+      "url": d.url,
+      "priceCurrency": d.currency,
+      "price": d.price!==null ? d.price.toFixed(2) : "",
+      "availability": "https://schema.org/"+d.avail,
+      "itemCondition": "https://schema.org/NewCondition"
+    };
+    if(d.shipcost!==null || d.shipdays!==null){
+      offer.shippingDetails = {
+        "@type":"OfferShippingDetails",
+        "shippingRate": d.shipcost!==null ? {"@type":"MonetaryAmount","value": d.shipcost, "currency": d.currency} : null,
+        "shippingDestination": {"@type":"DefinedRegion","addressCountry": country},
+        "deliveryTime": d.shipdays!==null ? {
+          "@type":"ShippingDeliveryTime",
+          "handlingTime":{"@type":"QuantitativeValue","minValue":0,"maxValue":1,"unitCode":"DAY"},
+          "transitTime":{"@type":"QuantitativeValue","minValue":1,"maxValue":Math.max(1, Math.round(d.shipdays)),"unitCode":"DAY"}
+        } : null
+      };
+    }
+    if(d.retdays!==null){
+      offer.hasMerchantReturnPolicy = d.retdays>0 ? {
+        "@type":"MerchantReturnPolicy",
+        "applicableCountry": country,
+        "returnPolicyCategory":"https://schema.org/MerchantReturnFiniteReturnWindow",
+        "merchantReturnDays": Math.round(d.retdays)
+      } : {
+        "@type":"MerchantReturnPolicy",
+        "applicableCountry": country,
+        "returnPolicyCategory":"https://schema.org/MerchantReturnNotPermitted"
+      };
+    }
+    var p = {
+      "@context":"https://schema.org/",
+      "@type":"Product",
+      "name": d.name,
+      "description": d.desc,
+      "image": d.img ? [d.img] : [],
+      "sku": d.sku,
+      "brand": d.brand ? {"@type":"Brand","name": d.brand} : null,
+      "offers": offer
+    };
+    if(d.rating!==null && d.reviews!==null && d.reviews>0){
+      p.aggregateRating = {"@type":"AggregateRating","ratingValue": d.rating, "reviewCount": Math.round(d.reviews)};
+    }
+    return wrapScript(clean(p));
+  }
+
+  function buildFaqLd(list){
+    if(!list.length) return "";
+    return wrapScript({
+      "@context":"https://schema.org",
+      "@type":"FAQPage",
+      "mainEntity": list.map(function(f){ return {"@type":"Question","name":f.q,"acceptedAnswer":{"@type":"Answer","text":f.a}}; })
+    });
+  }
+
+  function buildPlain(d){
+    var availTxt = {InStock:"In stock / En existencia", OutOfStock:"Out of stock / Agotado", PreOrder:"Pre-order / Preventa", BackOrder:"Back order / Sobre pedido"}[d.avail];
+    var L = [];
+    if(d.name) L.push(d.name);
+    if(d.brand) L.push("Brand / Marca: "+d.brand);
+    if(d.price!==null) L.push("Price / Precio: "+d.price.toLocaleString("en-US",{minimumFractionDigits:2, maximumFractionDigits:2})+" "+d.currency);
+    L.push("Availability / Disponibilidad: "+availTxt);
+    if(d.shipcost!==null || d.shipdays!==null){
+      var s = "Shipping / Envío: ";
+      s += d.shipcost===0 ? "free / gratis" : (d.shipcost!==null ? d.shipcost+" "+d.currency : "");
+      if(d.shipdays!==null) s += (d.shipcost!==null?", ":"")+"up to "+Math.round(d.shipdays)+" days / hasta "+Math.round(d.shipdays)+" días";
+      L.push(s);
+    }
+    if(d.retpolicy) L.push("Returns / Devoluciones: "+d.retpolicy);
+    else if(d.retdays!==null) L.push("Returns / Devoluciones: "+(d.retdays>0? d.retdays+" days / días" : "no returns / sin devoluciones"));
+    if(d.sku) L.push("SKU: "+d.sku);
+    if(d.rating!==null && d.reviews) L.push("Rating / Calificación: "+d.rating+"/5 ("+Math.round(d.reviews)+" reviews)");
+    if(d.desc){ L.push(""); L.push(d.desc); }
+    if(d.faqs.length){ L.push(""); L.push("FAQ"); d.faqs.forEach(function(f){ L.push("Q: "+f.q); L.push("A: "+f.a); }); }
+    if(d.url){ L.push(""); L.push(d.url); }
+    return L.join("\n");
+  }
+
+  function copy(id){
+    var text = $(id).textContent, st = $("st-"+id);
+    function done(ok){ st.textContent = ok ? "Copied · Copiado" : "Select the text and copy it manually · Selecciona y copia"; setTimeout(function(){ st.textContent=""; }, 4000); }
+    if(navigator.clipboard && window.isSecureContext){
+      navigator.clipboard.writeText(text).then(function(){done(true);}, function(){done(false);});
+    } else {
+      try{
+        var ta=document.createElement("textarea"); ta.value=text; ta.setAttribute("readonly",""); ta.style.position="fixed"; ta.style.opacity="0";
+        document.body.appendChild(ta); ta.select(); var ok=document.execCommand("copy"); document.body.removeChild(ta); done(ok);
+      }catch(e){ done(false); }
+    }
+  }
+
+  function example(){
+    var set = function(id,v){ $(id).value=v; };
+    set("name","Waterproof women's hiking boot, leather, size 24");
+    set("brand","Sierra Norte");
+    set("sku","SN-HB-24-BRN");
+    set("desc","Leather hiking boot with a waterproof membrane, rubber sole with deep tread and padded ankle collar. Sizes 22 to 27 (Mexican sizing). Weight: 520 g per boot. Color: brown. Made in León, Guanajuato. Includes a spare pair of laces. Care: clean with a damp cloth and let dry away from direct heat. Fits true to size; if you are between sizes, choose the larger one.");
+    set("price","1899"); set("currency","MXN"); set("avail","InStock");
+    set("url","https://example.com/products/waterproof-hiking-boot"); set("img","https://example.com/img/hiking-boot.jpg");
+    set("country","MX"); set("shipcost","0"); set("shipdays","5");
+    set("retdays","30"); set("retpolicy","Free returns within 30 days, unused and in the original box.");
+    set("rating","4.6"); set("reviews","38");
+    set("fq1","Is it really waterproof?"); set("fa1","Yes. It has a waterproof membrane; it is not meant to be submerged.");
+    set("fq2","Do you ship outside Mexico City?"); set("fa2","Yes, free shipping to all of Mexico in 2 to 5 business days.");
+    set("fq3","How do I choose my size?"); set("fa3","Use your usual Mexican size. Between sizes, choose the larger one.");
+    var ans = {q_price_text:"yes", q_stock_text:"yes", q_ship_page:"no", q_alt:"no", q_reviews:"yes", q_schema:"unsure", q_gate:"no"};
+    Object.keys(ans).forEach(function(k){ var el=document.querySelector('input[name="'+k+'"][value="'+ans[k]+'"]'); if(el) el.checked=true; });
+    $("name").focus();
+  }
+
+  buildFaqs(); buildQuestions();
+  $("form").addEventListener("submit", function(e){ e.preventDefault(); render(evaluate()); });
+  $("example").addEventListener("click", example);
+  $("reset").addEventListener("click", function(){ ["results","out-jsonld","out-plain"].forEach(function(id){ $(id).hidden=true; }); setTimeout(function(){ $("country").value="MX"; },0); });
+  $("print").addEventListener("click", function(){ window.print(); });
+  document.querySelectorAll("[data-copy]").forEach(function(b){ b.addEventListener("click", function(){ copy(b.getAttribute("data-copy")); }); });
+})();
+</script>
+</body>
+</html>
